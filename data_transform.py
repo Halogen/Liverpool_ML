@@ -34,4 +34,6 @@ def transform_data(df,num_bins):
     df["WT_DUR_CATE"] = target_cate(df["WT_DUR_DAYS"],num_bins)
     
     
+    
+    
     return df
