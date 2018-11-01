@@ -2,6 +2,7 @@
 This is for transform categorical data to numerical(both level & non-level). 
 '''
 import pandas as pd
+from sklearn import preprocessing
 
 
 def set_dtype(df):
@@ -29,11 +30,33 @@ def target_cate(df_attribute,num_bins):
     return pd.qcut(df_attribute, num_bins)
 
 
-def transform_data(df,num_bins):
+# def transform_data(df,num_bins):
+#     df = set_dtype(df)
+#     df["WT_DUR_CATE"] = target_cate(df["WT_DUR_DAYS"],num_bins)
+    
+    
+#     return df
+
+def cate_encode(df,cate_list):
+    le = preprocessing.LabelEncoder()
+    cate_to_num_features = []
+    for feature in cate_list:
+        vec_name = feature+"_VEC"
+        cate_to_num_features.append(vec_name)
+        df[vec_name] = le.fit_transform(df['PLANNED_PROCEDURE_DISPLAY'])
+        
+    return df,cate_to_num_features
+        
+
+def preprocess_data(df,num_bins_target,values_fill_na,cate_list):
+    
     df = set_dtype(df)
     df["WT_DUR_CATE"] = target_cate(df["WT_DUR_DAYS"],num_bins)
+    ##fill nan according to given list
+    df.fillna(value=values,inplace=True)
+    
+    df,cate_feature_for_model = cate_encode(df,cate_list)
+    
+    return df,cate_feature_for_model
     
     
-    
-    
-    return df
