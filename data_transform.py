@@ -9,6 +9,9 @@ def set_dtype(df):
     time_col = ['RECOMMEND_DT_TM', 'LATEST_ACTIVE_STATUS_DT_TM'] 
     for col in time_col:
         df[col] = pd.to_datetime(df[col])
+        df[col+"_FLOAT"] = pd.to_timedelta(df[col]).dt.total_seconds().astype(int)
+        
+
 
     df['WT_DUR'] = pd.to_timedelta(df['WT_DUR'])
     df['WT_DUR_DAYS'] = df['WT_DUR'].dt.days## grap days
@@ -43,7 +46,7 @@ def cate_encode(df,cate_list):
     for feature in cate_list:
         vec_name = feature+"_VEC"
         cate_to_num_features.append(vec_name)
-        df[vec_name] = le.fit_transform(df['PLANNED_PROCEDURE_DISPLAY'])
+        df[vec_name] = le.fit_transform(df[feature])
         
     return df,cate_to_num_features
         
@@ -51,9 +54,9 @@ def cate_encode(df,cate_list):
 def preprocess_data(df,num_bins_target,values_fill_na,cate_list):
     
     df = set_dtype(df)
-    df["WT_DUR_CATE"] = target_cate(df["WT_DUR_DAYS"],num_bins)
+    df["WT_DUR_CATE"] = target_cate(df["WT_DUR_DAYS"],num_bins_target)
     ##fill nan according to given list
-    df.fillna(value=values,inplace=True)
+    df.fillna(value=values_fill_na,inplace=True)
     
     df,cate_feature_for_model = cate_encode(df,cate_list)
     
