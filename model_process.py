@@ -4,7 +4,7 @@ from classifier_train import *
 
 num_feature_list = ['FRE_WT', 'FRE_APPT', 'LAT', 'LON', 'HOSP_LAT', 'HOSP_LON', 'HOSP_DIST', 'RECOMMEND_DT_TM_FLOAT', 'URGENCY_FLAG', 'URGENCY_CHG_IND']
 
-cate_feature_list = ['GENDER', 'AGE','SUBURB', 'STATE', 'POSTCODE','LOC_FACILITY_CD_DISPLAY', 'PLANNED_PROCEDURE_DISPLAY','URGENCY_DISPLAY']
+cate_feature_list = ['GENDER', 'AGE','SUBURB', 'STATE', 'POSTCODE','LOC_FACILITY_CD_DISPLAY', 'PLANNED_PROCEDURE_DISPLAY','URGENCY_DISPLAY','WT_DUR_CATE']
        
     
 
@@ -17,11 +17,35 @@ def involk_training(input_feature_list,df):
     
     return model
 
+def model_predict_output(model,input_feature_list,df):
+    
+    df['pred_value'] = model.predict(df[input_feature_list])
+    
+    res = model.predict_proba(df[input_feature_list])
+    
+    category = len(df['pred_value'].unique())
+    
+    keys = df.ENCNTR_ID
+    
+    for cate in range(category):
+        key_prob = {}
+        prob = res[:,cate]
+        for i in range(len(keys)):
+            key_prob[keys[i]] = prob[i]
+
+        df[str(cate)] = df['ENCNTR_ID'].map(key_prob)
+    
+    
+    df.to_csv('data/df_res.csv')
+    
+    
+    
+    
     
         
 def main():
     
-    df = pd.read_csv("",dtype='unicode')
+    df = pd.read_csv("data/patient_view/swslhd_comp_stat_no_doc_v2_3110.csv",dtype='unicode')
     
     values = {'HOSP_DIST': 9999,'STATE':'NA', 'LAT':0, 'LON': 0}
     
@@ -31,25 +55,9 @@ def main():
     input_feature_list = vec_list + num_feature_list
     print('Training Random Forest...')
     clf_model = involk_training(input_feature_list,df)
-       
+    print('Produce Output...')
+    model_predict_output(clf_model,input_feature_list,df)
     
-#     dt = process_data_pd()
-#     pos_data, neg_data = text2vec()
-#     print('Running SMOTE... to rebalance')
-#     new_pos_data = gen_data_set_with_smote(pos_data)
-#     print('New positive data size:', new_pos_data.shape[0])
-#     data = np.concatenate((new_pos_data, neg_data))
-#     label = ['1']*new_pos_data.shape[0] + ['0']*neg_data.shape[0]
-    
-    
-#     print('Training Random Forest...')
-#     model = training_forest(data, label)
-
-#     test_data = np.concatenate((pos_data, neg_data))
-#     test_forest(model, test_data)
-#     print('Write result to file...')
-#     output_res_new(dt)
-
 
 if __name__ == '__main__':
     main()
