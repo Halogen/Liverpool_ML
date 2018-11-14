@@ -2,6 +2,10 @@
 
 from google.cloud import bigquery
 import pandas as pd
+import io
+
+from google.cloud import storage
+
 
 class bquery_func:
     
@@ -55,3 +59,28 @@ class bquery_func:
         
         return 
     
+    
+class gcp_storage:
+    
+    def __init__(self,bucket_id):
+        """
+        setup credential by a json file
+        """
+        self.client = storage.Client.from_service_account_json('credentials/LIVERPOOL DEMO-e778084b3d0f.json')
+        self.bucket = self.client.get_bucket(bucket_id)
+        
+    def read_to_str(self,path):
+        
+        blob = self.bucket.blob(path)
+        
+        return blob.download_as_string()
+        
+    def read_csv(self,path):
+        
+        iofile = self.read_to_str(path)
+        df = pd.read_csv(io.BytesIO(iofile))
+        
+        return df
+        
+        
+       
