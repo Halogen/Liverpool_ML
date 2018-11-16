@@ -1,0 +1,36 @@
+[
+  {
+    "name": "Jamie Wheeler",
+    "role": "NIMON",
+    "username": "jwheeler",
+    "password": "wM@U4W6D"
+  },
+
+  {
+    "name": "Josephine Chow",
+    "role": "NIMON",
+    "username": "jchow",
+    "password": "9!pHpq&9"
+  },
+
+  {
+    "name": "Les Bokey",
+    "role": "NIMON",
+    "username": "lbokey",
+    "password": "JQ^zem9P"
+  },
+
+  {
+    "name": "Michele Harris",
+    "role": "NIMON",
+    "username": "mharris",
+    "password": "Fr58q!7r"
+  },
+
+    {
+    "name": "Admin",
+    "role": "admin",
+    "username": "admin",
+    "password": "liverpool"
+  }
+]

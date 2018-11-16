@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <!-- Page content -->
+              <div class="container-fluid flex-grow-1 container-p-y">
+                <div class="card mb-4" style="width:600px; margin:0 auto;">
+
+                  <div class="card-body">
+                    <h2 class="card-title text-center">Sign In</h2>
+
+
+                    <form id="validation-form">
+                      <div class="form-group">
+                        <label class="form-label text-left">Username</label>
+                        <input type="text" class="form-control" placeholder="Username" name="username" value="{{
+          request.form.username }}">
+
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">Password</label>
+                        <input type="password" class="form-control" placeholder="Password" name="password" value="{{
+          request.form.password }}">
+
+                      </div><br><br>
+                      <div class="text-center">
+                      <input class="btn btn-success" value="Log In" method="post" >
+                    </form>
+
+                    {% if error %}
+                      <p class="error"><strong>Error:</strong> {{ error }}</p>
+                    {% endif %}
+                    {% for message in get_flashed_messages() %}
+                      {{ message }}
+                    {% endfor %}
+
+                  </div>
+                  
+                </div>
+              </div>
+              <!-- / Page content -->
+{% endblock %}
+
+
+
+

@@ -1,0 +1,22 @@
+.navbar-brand {
+
+    justify-content: center;
+}
+
+/* Show if nav bar is fixed to the top */
+body {
+    /*min-height: 75rem;
+    padding-top: 0rem;*/
+}
+
+.navbar-brand-img a:hover {
+    text-decoration: none; !important;
+}
+
+.progress {
+    height: 3px;
+}
+
+.dropdown:hover>.dropdown-menu {
+    display: block;
+  }

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="position-relative overflow-hidden mt-3 text-center">
+<div  class="container-fluid ">
+
+    <div class="align-items-stretch ui-bg-cover ui-bg-overlay-container rounded" style="background-image: url(/static/assets/img/banners/369716672_lo4.png)">
+            <div class="row no-gutters w-100">
+
+              <div class="d-flex col flex-column text-black px-4 px-sm-5">
+
+
+                <div class="py-5">
+
+                  <h2 style="color:black;" >Welcome to SWSLHD Surgery Admissions</h2>
+                  <p class="text-big" style="color:black;">A way for medical staff and their patients at South Western Sydney Local Health District to better forecast and manage their surgery admissions waitlists.</p>
+
+                {% if session['logged_in'] %}
+
+                      <div >
+                        <button type="button" class="btn btn-success btn-block text-expanded"  style="margin: 0 auto; width: 30%">
+                          <small class="font-weight-bold">Let's get started</small>
+                        </button>
+                      </div>
+                {% else %}
+                    <div class="card mb-4" style="width:30%; margin:0 auto;min-width: 300px;">
+                        <div class="card-body">
+                            <div class="login-form">
+
+
+
+
+          <form method="post">
+          <input type="hidden" name="csrfmiddlewaretoken" value="hABa0Eg7tKjddLLo3dZJ0LWvilzHJ5aH7r6oe8rKSavQfPy1fXu4s5tsloOtW2oo">
+
+              <h2 class="text-center">Log in</h2>
+              <div class="form-group">
+                  <input type="text" name="username" autofocus="" id="id_username" class="form-control" required="" placeholder="Username" maxlength="254">
+              </div>
+              <div class="form-group">
+                  <input type="password" name="password" class="form-control" required="" id="id_password" placeholder="Password">
+              </div>
+              <div class="form-group">
+                  <input class="btn btn-success btn-block" type="submit" value="Log in" >
+              </div>
+              <div class="clearfix" >
+                  <label class="checkbox-inline pull-left "><input type="checkbox"> Remember me </label>
+                  <a href="/">Forgot Password?</a>
+              </div>
+          </form>
+          <p class="text-center"><a href="/">Create an Account</a></p>
+      </div>
+
+                        </div>
+                    </div>
+                    {% endif %}
+
+
+              </div>
+
+    </div>
+
+    </div>
+
+
+
+</div>
+</div>
+              <!-- / Page content -->
+{% endblock %}
+
+
+
+
