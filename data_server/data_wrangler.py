@@ -31,53 +31,81 @@ class data_wrangler:
 #             print('change3')
         return self.df
 
-    def edit_timestamp(self):
+    def edit_timestamp(self,df):
+#         if df==None:
+#             df=self.df.copy()            
+#         else:
+#             df=df.copy()
+        for col in df.columns:
+            if col.find('DT_TM')>=0:
+                df[col]=pd.to_datetime(df[col])
+                print(col)
+        return df
+    
+    
+
         
+    def data_separate(self,df):
+        '''
+        separate data to different components
+        for safety reason instead of using list of column name
+        use index 
+        '''
+        saperator = ['PATIENT_DATA',  'WAITLIST_DATA', 'WAITLIST_HIST_DATA', 'ENCOUNTER_DATA', 'APPOINTMENT_DATA', 'SURGICAL_CASE_DATA', 'SURGICAL_CASE_ATTENDEE_DATA']
+        
+        saperator_num = []
+        for s in saperator:
+            saperator_num.append(list(df.columns).index(s))
+            
+        
+        patient_col = list(df.columns[(saperator_num[0]+1):saperator_num[1]])
+        patient_col.append('ENCNTR_ID')
+        
+        wl_col = list(df.columns[(saperator_num[1]+1):saperator_num[2]])
+        wl_col.append('ENCNTR_ID')
+        
+        wlh_col = list(df.columns[(saperator_num[2]+1):saperator_num[3]])
+        wlh_col.append('ENCNTR_ID')
+        
+        encntr_col = list(df.columns[(saperator_num[3]+1):saperator_num[4]])
+        ap_col = list(df.columns[(saperator_num[4]+1):saperator_num[5]])
+        sc_col = list(df.columns[(saperator_num[5]+1):saperator_num[6]])
+        sca_col = list(df.columns[(saperator_num[6]+1):])
+        
+        df_dic = {}
+        df_dic['PATIENT_DATA'] = df[patient_col].drop_duplicates()
+        df_dic['WAITLIST_DATA'] = df[wl_col].drop_duplicates()
+        df_dic['WAITLIST_HIST_DATA'] = df[wlh_col].drop_duplicates()
+        df_dic['ENCOUNTER_DATA'] = df[encntr_col].drop_duplicates()
+        df_dic['APPOINTMENT_DATA'] = df[ap_col].drop_duplicates()
+        df_dic['SURGICAL_CASE_DATA'] = df[sc_col].drop_duplicates()
+        df_dic['SURGICAL_CASE_ATTENDEE_DATA'] = df[sca_col].drop_duplicates()
+        
+        
+        return df_dic
+        
+        
+   
+    def pipeline1(self):
+        '''
+        rules to follow
+        BEG_EFFECTIVE_DT_TM  == BEG_EFFECTIVE_DT_TM_2
+        BEG_EFFECTIVE_DT_TM_1 == BEG_EFFECTIVE_DT_TM_2
+        '''
+#         if df==None: df = self.df
 
-# df["PM_WAIT_LIST_ID"] = df["PM_WAIT_LIST_ID"].apply(lambda row: str_with_na(row))
-# df["ACTIVE_IND"] = df["ACTIVE_IND"].apply(lambda row: str_with_na(row))
-# df["PM_WAIT_LIST_HIST_ID"] = df["PM_WAIT_LIST_HIST_ID"].apply(lambda row: str_with_na(row))
-# df["ACTIVE_IND_1"] = df["ACTIVE_IND_1"].apply(lambda row: str_with_na(row))
-# df["SCH_APPT_ID"] = df["SCH_APPT_ID"].apply(lambda row: str_with_na(row))
-# df["SCHEDULE_ID"] = df["SCHEDULE_ID"].apply(lambda row: str_with_na(row))
-# df["BOOKING_ID"] = df["BOOKING_ID"].apply(lambda row: str_with_na(row))
-# df["SCH_EVENT_ID"] = df["SCH_EVENT_ID"].apply(lambda row: str_with_na(row))
-# df["CA_CASE_ATTENDANCE_ID"] = df["CA_CASE_ATTENDANCE_ID"].apply(lambda row: str_with_na(row))
-# df["CA_ACTIVE_IND"] = df["CA_ACTIVE_IND"].apply(lambda row: str_with_na(row))
-# df["CA_SURG_CASE_ID"] = df["CA_SURG_CASE_ID"].apply(lambda row: str_with_na(row))
-# df["SC_SURG_CASE_ID"] = df["SC_SURG_CASE_ID"].apply(lambda row: str_with_na(row))
-# df["SC_SCH_EVENT_ID"] = df["SC_SCH_EVENT_ID"].apply(lambda row: str_with_na(row))
-# df["SA_ENCNTR_ID"] = df["SA_ENCNTR_ID"].apply(lambda row: str_with_na(row))
-
-
-# df["STATE"] = df["STATE"].apply(lambda row: np.nan if row ==' ' else row)
-
-# df["PLANNED_PROCEDURE_DISPLAY"] = df["PLANNED_PROCEDURE_DISPLAY"].apply(lambda row: np.nan if row ==' ' else row)
-# df["PLANNED_PROCEDURE_DISPLAY"] = df["PLANNED_PROCEDURE_DISPLAY"].apply(lambda row: np.nan if row ==' ' else row)
-# df["REASON_FOR_CHANGE_DISPLAY"] = df["REASON_FOR_CHANGE_DISPLAY"].apply(lambda row: np.nan if row ==' ' else row)
-# df["REASON_FOR_REMOVAL_DISPLAY"] = df["REASON_FOR_REMOVAL_DISPLAY"].apply(lambda row: np.nan if row ==' ' else row)
-# df["URGENCY_DISPLAY"] = df["URGENCY_DISPLAY"].apply(lambda row: np.nan if row ==' ' else row)
-# df["PLANNED_PROCEDURE_DISPLAY_HST"] = df["PLANNED_PROCEDURE_DISPLAY_HST"].apply(lambda row: np.nan if row ==' ' else row)
-# df["REASON_FOR_CHANGE_DISPLAY_HST"] = df["REASON_FOR_CHANGE_DISPLAY_HST"].apply(lambda row: np.nan if row ==' ' else row)
-# df["REASON_FOR_REMOVAL_DISPLAY_HST"] = df["REASON_FOR_REMOVAL_DISPLAY_HST"].apply(lambda row: np.nan if row ==' ' else row)
-# df["URGENCY_DISPLAY_HST"] = df["URGENCY_DISPLAY_HST"].apply(lambda row: np.nan if row ==' ' else row)
-# df["LOC_NURSE_UNIT_CD_DISPLAY"] = df["LOC_NURSE_UNIT_CD_DISPLAY"].apply(lambda row: np.nan if row ==' ' else row)
-# df["LOC_TEMP_CD_DISPLAY"] = df["LOC_TEMP_CD_DISPLAY"].apply(lambda row: np.nan if row ==' ' else row)
-# df["ACTIVE_STATUS_CD_DISPLAY"] = df["ACTIVE_STATUS_CD_DISPLAY"].apply(lambda row: np.nan if row ==' ' else row)
-# df["PROC_ROOM"] = df["PROC_ROOM"].apply(lambda row: np.nan if row ==' ' else row)
-# df["CANCEL_REASON_DISPLAY"] = df["CANCEL_REASON_DISPLAY"].apply(lambda row: np.nan if row ==' ' else row)
-# df["CLINICIAN_ROLE"] = df["CLINICIAN_ROLE"].apply(lambda row: np.nan if row ==' ' else row)
-# df["CLINICIAN"] = df["CLINICIAN"].apply(lambda row: np.nan if row ==' ' else row)
-
-
+        self.df = self.edit_dtype()
+        self.df = self.edit_timestamp(self.df)
+        
+        df1 = self.df[abs(self.df.BEG_EFFECTIVE_DT_TM-self.df.BEG_EFFECTIVE_DT_TM_2)<pd.to_timedelta('1 days')].copy()
+        df2 = df1[abs(df1.BEG_EFFECTIVE_DT_TM_1-df1.BEG_EFFECTIVE_DT_TM_2)<pd.to_timedelta('1 days')].copy()
+        
+        df2_dict = self.data_separate(df2)
+        
+        return df2,df2_dict    
+    
 
     
-    
-# df["PERSON_ID"] = df["PERSON_ID"].astype(str)
-# df["MRN"] = df["MRN"].astype(str)
-# df["CMRN"] = df["CMRN"].astype(str)
-# df["ENCNTR_ID"] = df["ENCNTR_ID"].astype(str)
-# df["ORGANIZATION_ID"] = df["ORGANIZATION_ID"].astype(str)
-# df["ACTIVE_IND_2"] = df["ACTIVE_IND_2"].astype(str)
-
-
+        
+        
+        
