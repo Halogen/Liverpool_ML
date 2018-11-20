@@ -1,4 +1,5 @@
 import pandas as pd
+from datetime import datetime
 from data_transform import *
 from classifier_train import *
 
@@ -56,6 +57,20 @@ def main():
     print('Training Random Forest...')
     clf_model = involk_training(input_feature_list,df)
     print('Produce Output...')
+    # Export the model to a file
+    time_now = str(datetime.utcnow().date())
+    model_name = 'clf_rf_'+time_now+'.joblib'
+    joblib.dump(clf_model, model_name)
+    
+    # Upload the model to GCS
+#     bucket = storage.Client().bucket(BUCKET_NAME)
+#     blob = bucket.blob('{}/{}'.format(
+#     datetime.datetime.now().strftime('census_%Y%m%d_%H%M%S'),
+#     model))
+#     blob.upload_from_filename(model)
+
+    
+    
     model_predict_output(clf_model,input_feature_list,df)
     
 
