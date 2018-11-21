@@ -78,9 +78,78 @@ class gcp_storage:
     def read_csv(self,path):
         
         iofile = self.read_to_str(path)
-        df = pd.read_csv(io.BytesIO(iofile))
+        df = pd.read_csv(io.BytesIO(iofile),low_memory=False)
         
         return df
         
+    def upload_file_string(self, file_stream, path_filename, content_type):
+        """
+        Uploads a string to a given Cloud Storage bucket and returns the public url
+        to the new object.
+        """
+        #fow_logger.info('filename ' + str(filename) + " b " + str(bucket_name))
+        blob = bucket.blob(path_filename)
+
+        #fow_logger.info("uploading file " + str(filename) + " into " + str(bucket_name))
+        blob.upload_from_string(
+            file_stream,
+            content_type=content_type)
+#         fow_logger.info("Uploaded input files into " + str(bucket_name))
         
+        return blob
+    
+    def upload_file(self, file, path_filename, content_type):
+        """
+        Uploads a file object.
+        example: open('file.py') as file: upload_file
+        
+        """
+        #fow_logger.info('filename ' + str(filename) + " b " + str(bucket_name))
+        blob = bucket.blob(path_filename)
+
+        #fow_logger.info("uploading file " + str(filename) + " into " + str(bucket_name))
+        blob.upload_from_file(
+            file,
+            content_type=content_type)
+#         fow_logger.info("Uploaded input files into " + str(bucket_name))
+        
+        return blob
+    
+    def upload_filename(self, filename, path_filename):
+        """
+        Uploads a filename (path where the file is in logal env)
+        """
+        #fow_logger.info('filename ' + str(filename) + " b " + str(bucket_name))
+        blob = bucket.blob(path_filename)
+
+        #fow_logger.info("uploading file " + str(filename) + " into " + str(bucket_name))
+        blob.upload_from_filename('temp_folder/'+filename)
+#         fow_logger.info("Uploaded input files into " + str(bucket_name))
+        
+        return blob
+    
+    
+    def upload_df_csv(self,df,filename,path):
+        """
+        upload pandas dataframe to storage as a CSV file
+        """
+        df.to_csv('temp_dir/'+filename)# create file 
+        path_filename = path+'/'+filename# for blob
+        
+        self.upload_filename('temp_dir/'+filename, path_filename)
+        os.remove('temp_dir/'+filename)# delete file after upload
+        
+        return 
+        
+        
+      
+    def upload_model_joblib(self,model,filename,path):
        
+        joblib.dump(model, 'temp_dir/'+filename)# create file 
+        path_filename = path+'/'+filename
+
+        self.upload_filename('temp_dir/'+filename, path_filename)
+        os.remove('temp_dir/'+filename)# delete file after upload
+        
+        return 
+          
